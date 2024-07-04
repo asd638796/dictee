@@ -1,17 +1,29 @@
-
+// src/components/Sidebar.tsx
 import React from 'react';
 
-const Sidebar: React.FC = () => {
-  const notes = ['Note 1', 'Note 2', 'Note 3']; 
+interface Note {
+  id: string;
+  body: string;
+}
 
+interface SidebarProps {
+  notes: Note[];
+  currentNote: Note | undefined;
+  setCurrentNoteId: (id: string) => void;
+  newNote: () => void;
+  deleteNote: (id: string) => void;
+}
+
+const Sidebar = ({ notes, currentNote, setCurrentNoteId, newNote, deleteNote }: SidebarProps): React.JSX.Element => {
   return (
     <div className="sidebar">
-      <h2>Saved Notes</h2>
-      <ul>
-        {notes.map((note, index) => (
-          <li key={index}>{note}</li>
-        ))}
-      </ul>
+      <button onClick={newNote}>New Note</button>
+      {notes.map(note => (
+        <div key={note.id} onClick={() => setCurrentNoteId(note.id)}>
+          <p>{note.body.split('\n')[0]}</p>
+          <button onClick={(e) => { e.stopPropagation(); deleteNote(note.id); }}>Delete</button>
+        </div>
+      ))}
     </div>
   );
 };
