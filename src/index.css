@@ -17,6 +17,7 @@ body{
   background-color: #f4f4f4;
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  height: 95%;
 }
 
 .sidebar h2 {
@@ -43,7 +44,7 @@ body{
   margin-left: 1vw;
 }
 
-.body textarea {
+.body-text {
   
   min-height: 5vh;
   width: 70vw;
@@ -54,4 +55,90 @@ body{
   margin-left: 1vw;
   resize: none;
   
+}
+
+
+
+.body-text-container::before {
+  content: attr(data-placeholder);
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 1em;
+  color: #999;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.3s ease;
+}
+
+
+
+
+.sidebar button {
+  display: inline-block;
+  margin: 8px 0;
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  background-color: white;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  
+}
+
+.sidebar button:hover {
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+.sidebar button:focus {
+  outline: none;
+  box-shadow: 0 0 3px #6200ea;
+}
+
+.sidebar div {
+  margin-bottom: 10px;
+  padding: 8px;
+  
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.sidebar div p {
+  margin: 0;
+  padding: 8px 0;
+  flex-grow: 1;
+}
+
+.sidebar div button {
+  display: block;
+  width: 50%;
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  background-color: white;
+  color: black;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar div button:hover {
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+.title{
+  width: 100%;
+  font-size: 2em; /* Match h1 font size */
+  font-weight: bold; /* Match h1 font weight */
+  border: none;
+  outline: none;
+  margin-bottom: 16px;
+  margin-left: 1vw;
+  background-color: transparent; /* Make the background transparent */
+  color: inherit; /* Inherit the color from the parent */
 }

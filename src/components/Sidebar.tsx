@@ -3,6 +3,7 @@ import React from 'react';
 
 interface Note {
   id: string;
+  title: string;
   body: string;
 }
 
@@ -20,7 +21,7 @@ const Sidebar = ({ notes, currentNote, setCurrentNoteId, newNote, deleteNote }: 
       <button onClick={newNote}>New Note</button>
       {notes.map(note => (
         <div key={note.id} onClick={() => setCurrentNoteId(note.id)}>
-          <p>{note.body.split('\n')[0]}</p>
+          <p>{note.title}</p>
           <button onClick={(e) => { e.stopPropagation(); deleteNote(note.id); }}>Delete</button>
         </div>
       ))}

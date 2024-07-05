@@ -7,31 +7,58 @@ import './index.css';
 
 interface Note {
   id: string;
+  title: string;
   body: string;
 }
 
 const App = (): React.JSX.Element => {
-  const [notes, setNotes] = useState<Note[]>(() => JSON.parse(localStorage.getItem('notes') || '[]'));
-  const [currentNoteId, setCurrentNoteId] = useState<string>((notes[0] && notes[0].id) || '');
+  const [notes, setNotes] = useState<Note[]>(() => {
+    const savedNotes = JSON.parse(localStorage.getItem('notes') || '[]');
+    return savedNotes.length > 0 ? savedNotes : [createInitialNote()];
+  });
+  const [currentNoteId, setCurrentNoteId] = useState<string>('');
 
   useEffect(() => {
     localStorage.setItem('notes', JSON.stringify(notes));
   }, [notes]);
 
-  function createNewNote(): void {
-    const newNote: Note = {
+  useEffect(() => {
+    if (notes.length > 0 && !notes.find(note => note.id === currentNoteId)) {
+      setCurrentNoteId(notes[0].id);
+    }
+  }, [notes, currentNoteId]);
+
+  function createInitialNote(): Note {
+    return {
       id: nanoid(),
-      body: "# Type your markdown note's title here"
+      title: "New Note Title",
+      body: ""
     };
+  }
+
+  function createNewNote(): void {
+    const newNote: Note = createInitialNote();
     setNotes((prevNotes) => [newNote, ...prevNotes]);
     setCurrentNoteId(newNote.id);
   }
 
-  function updateNote(text: string): void {
+  function updateNoteTitle(title: string): void {
     setNotes((oldNotes) => {
       const newArray = oldNotes.map((note) => {
         if (note.id === currentNoteId) {
-          return { ...note, body: text };
+          return { ...note, title };
+        }
+        return note;
+      });
+      return [newArray.find(note => note.id === currentNoteId)!, ...newArray.filter(note => note.id !== currentNoteId)];
+    });
+  }
+
+  function updateNoteBody(body: string): void {
+    setNotes((oldNotes) => {
+      const newArray = oldNotes.map((note) => {
+        if (note.id === currentNoteId) {
+          return { ...note, body };
         }
         return note;
       });
@@ -44,9 +71,15 @@ const App = (): React.JSX.Element => {
   }
 
   function deleteNote(noteId: string): void {
-    setNotes((oldNotes) => oldNotes.filter(note => note.id !== noteId));
-    if (currentNoteId === noteId) {
-      setCurrentNoteId(notes[0]?.id || '');
+    if (notes.length > 1) {
+      setNotes((oldNotes) => oldNotes.filter(note => note.id !== noteId));
+      if (currentNoteId === noteId) {
+        setCurrentNoteId(notes[0]?.id || '');
+      }
+    } else {
+      const newNote = createInitialNote();
+      setNotes([newNote]);
+      setCurrentNoteId(newNote.id);
     }
   }
 
@@ -63,7 +96,11 @@ const App = (): React.JSX.Element => {
       </div>
       <div className="body-container">
         {currentNoteId && notes.length > 0 && (
-          <Body currentNote={findCurrentNote()} updateNote={updateNote} />
+          <Body
+            currentNote={findCurrentNote()}
+            updateNoteTitle={updateNoteTitle}
+            updateNoteBody={updateNoteBody}
+          />
         )}
       </div>
     </div>
