@@ -18,11 +18,25 @@ interface SidebarProps {
 const Sidebar = ({ notes, currentNote, setCurrentNoteId, newNote, deleteNote }: SidebarProps): React.JSX.Element => {
   return (
     <div className="sidebar">
-      <button onClick={newNote}>New Note</button>
+      <div className='header'>
+        <button className='new-note' onClick={newNote}>New Note</button>
+      </div>
+      
       {notes.map(note => (
-        <div key={note.id} onClick={() => setCurrentNoteId(note.id)}>
+        <div 
+          key={note.id}
+          onClick={() => setCurrentNoteId(note.id)}
+          className={`note ${note.id === currentNote?.id ? 'active' : ''}`}
+        >
           <p>{note.title}</p>
-          <button onClick={(e) => { e.stopPropagation(); deleteNote(note.id); }}>Delete</button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              deleteNote(note.id);
+            }}
+          >
+            Delete
+          </button>
         </div>
       ))}
     </div>

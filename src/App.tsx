@@ -38,7 +38,7 @@ const App = (): React.JSX.Element => {
 
   function createNewNote(): void {
     const newNote: Note = createInitialNote();
-    setNotes((prevNotes) => [newNote, ...prevNotes]);
+    setNotes((prevNotes) => [...prevNotes, newNote]);
     setCurrentNoteId(newNote.id);
   }
 
