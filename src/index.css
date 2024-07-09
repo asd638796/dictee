@@ -1,4 +1,3 @@
-
 .app {
   display: flex;
   height: 100vh;
@@ -20,6 +19,7 @@ html, body {
 .body {
   flex: 1;
   padding: 20px;
+  position: relative; /* Ensure absolute positioning within body */
 }
 
 .body h1 {
@@ -28,7 +28,6 @@ html, body {
 }
 
 .body-text {
-  
   min-height: 5vh;
   width: 70vw;
   height: 80vh;
@@ -37,7 +36,11 @@ html, body {
   font-size: 16px;
   margin-left: 1vw;
   resize: none;
-  
+  position: relative; /* For positioning the popup */
+}
+
+.textarea-container {
+  position: relative;
 }
 
 .body-text-container::before {
@@ -52,7 +55,7 @@ html, body {
   transition: opacity 0.3s ease;
 }
 
-.title{
+.title {
   width: 100%;
   font-size: 2em; /* Match h1 font size */
   font-weight: bold; /* Match h1 font weight */
@@ -64,13 +67,71 @@ html, body {
   color: inherit; /* Inherit the color from the parent */
 }
 
+.dictate-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 2vh 3vw;
+  background-color: #f4f4f4;
+  color: black;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
 
 
 
+.dictate-button:hover {
+  background-color: rgb(234, 234, 234); /* Change color on hover */
+}
+
+.dictate-button:active {
+  transform: scale(0.95); /* Press down effect */
+}
+
+.popup {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  word-break: break-word;
+  background-color: white;
+  border: 1px solid black;
+  padding: 10px;
+  z-index: 1000;
+  width: 200px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  
+}
 
 
+.popup-definition{
+  margin: 0;
+  margin-bottom: 3vh;
+  margin-left: 1vw;
+}
 
-/* src/components/Sidebar.css */
+.popup-button{
+  
+  align-self: flex-end;
+  padding: 1vh 2vw;
+  background-color: #f4f4f4;
+  color: black;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.popup-button:hover {
+  background-color: rgb(234, 234, 234); /* Change color on hover */
+}
+
+.popup-button:active {
+  transform: scale(0.95); /* Press down effect */
+}
+
+/* Sidebar CSS */
 .sidebar {
   width: 250px;
   background-color: #f4f4f4;
@@ -145,7 +206,6 @@ html, body {
 
 .note:hover button {
   opacity: 1; /* Show on hover */
- 
 }
 
 .note.active {
