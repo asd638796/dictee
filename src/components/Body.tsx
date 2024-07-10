@@ -129,7 +129,7 @@ const Body = ({ currentNote, updateNoteTitle, updateNoteBody }: BodyProps): Reac
         {popup.visible && (
           <div className="popup" style={{ top: popup.y, left: popup.x }}>
             <h1>{popup.word}</h1>
-            <p className='popup-definition'>Definition</p>
+            <p className='popup-definition'>{definition}</p>
             <button className="popup-button"onClick={handleWordDictateClick}>Dictate</button>
           </div>
         )}
