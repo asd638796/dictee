@@ -4,12 +4,16 @@
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  background-color: #121212; /* Dark background */
+  color: #f4f4f4; /* Light text */
 }
 
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  background-color: #121212; /* Dark background */
+  color: #f4f4f4; /* Light text */
 }
 
 #root {
@@ -37,6 +41,8 @@ html, body {
   margin-left: 1vw;
   resize: none;
   position: relative; /* For positioning the popup */
+  background-color: #333333; /* Darker textarea background */
+  color: #f4f4f4; /* Light text */
 }
 
 .textarea-container {
@@ -49,7 +55,7 @@ html, body {
   top: 8px;
   left: 8px;
   font-size: 1em;
-  color: #999;
+  color: #888888; /* Light grey placeholder text */
   pointer-events: none;
   z-index: 0;
   transition: opacity 0.3s ease;
@@ -72,18 +78,16 @@ html, body {
   bottom: 20px;
   right: 20px;
   padding: 2vh 3vw;
-  background-color: #f4f4f4;
-  color: black;
+  background-color: #333333; /* Darker button background */
+  color: #f4f4f4; /* Light text */
   font-size: 14px;
   cursor: pointer;
   border: none;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-
-
 .dictate-button:hover {
-  background-color: rgb(234, 234, 234); /* Change color on hover */
+  background-color: #444444; /* Change color on hover */
 }
 
 .dictate-button:active {
@@ -95,28 +99,26 @@ html, body {
   display: flex;
   flex-direction: column;
   word-break: break-word;
-  background-color: white;
-  border: 1px solid black;
+  background-color: #333333; /* Darker popup background */
+  border: 1px solid #888888; /* Light grey border */
   padding: 10px;
   z-index: 1000;
   width: 200px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  color: #f4f4f4; /* Light text */
 }
 
-
-.popup-definition{
+.popup-definition {
   margin: 0;
   margin-bottom: 3vh;
   margin-left: 1vw;
 }
 
-.popup-button{
-  
+.popup-button {
   align-self: flex-end;
   padding: 1vh 2vw;
-  background-color: #f4f4f4;
-  color: black;
+  background-color: #444444; /* Darker button background */
+  color: #f4f4f4; /* Light text */
   font-size: 14px;
   cursor: pointer;
   border: none;
@@ -124,7 +126,7 @@ html, body {
 }
 
 .popup-button:hover {
-  background-color: rgb(234, 234, 234); /* Change color on hover */
+  background-color: #555555; /* Change color on hover */
 }
 
 .popup-button:active {
@@ -134,16 +136,17 @@ html, body {
 /* Sidebar CSS */
 .sidebar {
   width: 250px;
-  background-color: #f4f4f4;
+  background-color: #333333; /* Darker sidebar background */
   padding: 20px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
   height: 100%;
   margin: 0;
   padding: 0;
   overflow-y: auto;
+  color: #f4f4f4; /* Light text */
 }
 
-.header { 
+.header {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -154,8 +157,8 @@ html, body {
 
 .new-note {
   padding: 2vh 3vw;
-  background-color: white;
-  color: black;
+  background-color: #444444; /* Darker button background */
+  color: #f4f4f4; /* Light text */
   font-size: 14px;
   cursor: pointer;
   border: none;
@@ -164,7 +167,7 @@ html, body {
 }
 
 .new-note:hover {
-  background-color: rgb(234, 234, 234); /* Change color on hover */
+  background-color: #555555; /* Change color on hover */
 }
 
 .new-note:active {
@@ -190,8 +193,8 @@ html, body {
 }
 
 .note button {
-  background-color: rgb(255, 255, 255);
-  color: black;
+  background-color: #444444; /* Darker button background */
+  color: #f4f4f4; /* Light text */
   font-size: 14px;
   cursor: pointer;
   padding: 1vw 2vh;
@@ -209,6 +212,6 @@ html, body {
 }
 
 .note.active {
-  background-color: black;
-  color: white;
+  background-color: #000000; /* Active note background */
+  color: #f4f4f4; /* Light text */
 }

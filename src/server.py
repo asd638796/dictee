@@ -1,12 +1,77 @@
-from flask import Flask, request, jsonify, send_file
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import CORS
-import os
+from flask import Flask, request, jsonify, send_file
 import tempfile
 import subprocess
 import requests
 
 app = Flask(__name__)
-CORS(app)
+CORS(app)  # This will enable CORS for all routes
+
+# Database configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@localhost:5432/dictee'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# User model
+class User(db.Model):
+    __tablename__ = 'users'
+    userid = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+
+# Note model
+class Note(db.Model):
+    __tablename__ = 'notes'
+    noteid = db.Column(db.Integer, primary_key=True)
+    userid = db.Column(db.Integer, db.ForeignKey('users.userid'), nullable=False)
+    notebody = db.Column(db.Text, nullable=False)
+
+# Initialize database
+with app.app_context():
+    db.create_all()
+
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({"error": "Username and password are required"}), 400
+
+    user_exists = User.query.filter_by(username=username).first()
+    if user_exists:
+        return jsonify({"error": "Username already exists"}), 400
+
+    hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+    new_user = User(username=username, password=hashed_password)
+
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({"message": "User registered successfully"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({"error": "Username and password are required"}), 400
+
+    user = User.query.filter_by(username=username).first()
+
+    if user and check_password_hash(user.password, password):
+        return jsonify({"message": "Login successful", "userid": user.userid}), 200
+    else:
+        return jsonify({"error": "Invalid username or password"}), 401
+
+
 
 @app.route('/api/tts', methods=['POST'])
 def tts():
@@ -49,4 +114,7 @@ def get_definition():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
+    app.run(debug=True)
     app.run(port=5002)
+
+

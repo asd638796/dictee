@@ -1,47 +1,67 @@
 .auth-container {
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .auth-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-  }
-  
-  button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    border: none;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  p {
-    text-align: center;
-  }
-  
+  width: 30vw;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #333333; /* Darker container background */
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+}
+
+.auth-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: Arial, sans-serif; /* Ensure consistent font */
+}
+
+.form-group {
+  margin-bottom: 2vh;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-family: Arial, sans-serif; /* Ensure consistent font */
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: Arial, sans-serif; /* Ensure consistent font */
+  background-color: #444444; /* Darker input background */
+  color: #f4f4f4; /* Light text */
+}
+
+.auth-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #555555; /* Darker button background */
+  color: #f4f4f4; /* Light text */
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: Arial, sans-serif; /* Ensure consistent font */
+  margin-top: 1vh;
+}
+
+.auth-button:hover {
+  background-color: #666666; /* Change color on hover */
+}
+
+.auth-button:active {
+  transform: scale(0.95); /* Press down effect */
+}
+
+.auth-p {
+  text-align: center;
+  font-family: Arial, sans-serif; /* Ensure consistent font */
+  color: #f4f4f4; /* Light text */
+}
