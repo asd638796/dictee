@@ -16,9 +16,7 @@ html, body {
   color: #f4f4f4; /* Light text */
 }
 
-#root {
-  height: 100%;
-}
+
 
 .body {
   flex: 1;
@@ -67,18 +65,26 @@ html, body {
   font-weight: bold; /* Match h1 font weight */
   border: none;
   outline: none;
-  margin-bottom: 16px;
-  margin-left: 1vw;
   background-color: transparent; /* Make the background transparent */
   color: inherit; /* Inherit the color from the parent */
+  
 }
 
-.dictate-button {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
+.header-body{
+  display: flex;
+  align-items: center;
+  
+  margin-bottom: 5vh;
+  margin-left: 1vw;
+  margin-top: 2vh;
+  
+}
+
+.logout-button{
+  
+  
   padding: 2vh 3vw;
-  background-color: #333333; /* Darker button background */
+  background-color: #444444; /* Darker button background */
   color: #f4f4f4; /* Light text */
   font-size: 14px;
   cursor: pointer;
@@ -86,11 +92,24 @@ html, body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.dictate-button:hover {
-  background-color: #444444; /* Change color on hover */
+.dictate-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 2vh 3vw;
+  background-color: #444444; /* Darker button background */
+  color: #f4f4f4; /* Light text */
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.dictate-button:active {
+.dictate-button:hover, .logout-button:hover  {
+  background-color: #555555; /* Change color on hover */
+}
+
+.dictate-button:active, .logout-button:active  {
   transform: scale(0.95); /* Press down effect */
 }
 

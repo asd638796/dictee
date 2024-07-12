@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import './Auth.css';
 
 const Login = (): React.JSX.Element => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -19,7 +21,8 @@ const Login = (): React.JSX.Element => {
     });
 
     if (response.ok) {
-      
+      const data = await response.json();
+      login(data.user);
       alert("Login successful");
       navigate('/app'); // Redirect to your main app page
     } else {

@@ -5,12 +5,16 @@ from flask import Flask, request, jsonify, send_file
 import tempfile
 import subprocess
 import requests
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)  # This will enable CORS for all routes
 
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:password@localhost:5432/dictee'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -114,7 +118,7 @@ def get_definition():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    app.run(port=5002)
+    app.run(debug=True, port=5000)
+    
 
 

@@ -11,6 +11,14 @@
   gap: 2vh;
 }
 
+.auth-root{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .auth-container h2 {
   text-align: center;
   margin-bottom: 20px;
