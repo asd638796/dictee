@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Auth.css';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase/firebase'; // Adjust the path as needed
 
 const Register = (): React.JSX.Element => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -17,21 +20,16 @@ const Register = (): React.JSX.Element => {
       return;
     }
 
-    const response = await fetch('http://localhost:5000/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });
-
-    if (response.ok) {
-      alert("User registered successfully");
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert('User registered successfully');
       navigate('/login');
-    } else {
-      const data = await response.json();
-      setError(data.error);
+    } catch (error) {
+        console.error('Error registering user', error);
+        alert('Error registering user');
     }
+
+
   };
 
   return (
@@ -40,13 +38,13 @@ const Register = (): React.JSX.Element => {
         <h2>Register</h2>
         <form onSubmit={handleSubmit}>
           <div className='form-group'>
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">Email</label>
             <input
               type="text"
               id="username"
               name="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className='form-group'>

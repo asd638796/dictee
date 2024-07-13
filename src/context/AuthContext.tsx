@@ -1,7 +1,8 @@
+// AuthProvider.tsx
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface User {
-  username: string;
+  uid: string;
 }
 
 interface AuthContextType {
@@ -17,7 +18,11 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps): React.JSX.Element => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    // Load user from localStorage if available
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
   const login = (userData: User) => {
     setUser(userData);

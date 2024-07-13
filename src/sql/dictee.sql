@@ -2,10 +2,10 @@
 \c dictee
 
 -- Create the users table
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE users (
     userid SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(150) NOT NULL
+    firebase_uid VARCHAR(255) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL
 );
 
 -- Create the notes table

@@ -1,36 +1,34 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+
+
+
 import './Auth.css';
 
 const Login = (): React.JSX.Element => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    
     e.preventDefault();
+    const auth = getAuth();
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            login({uid: user.uid}); 
+            alert('User logged in successfully');
+            navigate('/app')
+        } catch (error) {
+            console.error('Error logging in', error);
+            alert('Error logging in');
+        }
 
-    const response = await fetch('http://localhost:5000/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    }); 
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log(data);
-      login(data.userid);
-      alert("Login successful")
-      navigate('/app'); // Redirect to your main app page
-      
-    } else {
-      const data = await response.json();
-      alert(`Error: ${data.error}`);
-    }
+    
   };
 
   return (
@@ -39,13 +37,13 @@ const Login = (): React.JSX.Element => {
         <h2>Login</h2>
         <form onSubmit={handleSubmit}>
           <div className='form-group'>
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">Email</label>
             <input
               type="text"
               id="username"
               name="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className='form-group'>
