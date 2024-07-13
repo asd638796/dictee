@@ -18,13 +18,15 @@ const Login = (): React.JSX.Element => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ username, password }),
-    });
+    }); 
 
     if (response.ok) {
       const data = await response.json();
-      login(data.user);
-      alert("Login successful");
+      console.log(data);
+      login(data.userid);
+      alert("Login successful")
       navigate('/app'); // Redirect to your main app page
+      
     } else {
       const data = await response.json();
       alert(`Error: ${data.error}`);
