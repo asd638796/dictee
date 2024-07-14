@@ -11,7 +11,7 @@ import os
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # This will enable CORS for all routes
+CORS(app)
 
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
@@ -22,8 +22,8 @@ db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = 'users'
     userid = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
+    firebase_uid = db.Column(db.String(255), unique=True, nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
 
 # Note model
 class Note(db.Model):
@@ -39,18 +39,17 @@ with app.app_context():
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
+    firebase_uid = data.get('firebase_uid')
+    email = data.get('email')
 
-    if not username or not password:
-        return jsonify({"error": "Username and password are required"}), 400
+    if not firebase_uid or not email:
+        return jsonify({"error": "Firebase UID and email are required"}), 400
 
-    user_exists = User.query.filter_by(username=username).first()
+    user_exists = User.query.filter_by(firebase_uid=firebase_uid).first()
     if user_exists:
-        return jsonify({"error": "Username already exists"}), 400
+        return jsonify({"error": "User already exists"}), 400
 
-    hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-    new_user = User(username=username, password=hashed_password)
+    new_user = User(firebase_uid=firebase_uid, email=email)
 
     try:
         db.session.add(new_user)
@@ -58,23 +57,6 @@ def register():
         return jsonify({"message": "User registered successfully"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-
-@app.route('/login', methods=['POST'])
-def login():
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
-
-    if not username or not password:
-        return jsonify({"error": "Username and password are required"}), 400
-
-    user = User.query.filter_by(username=username).first()
-
-    if user and check_password_hash(user.password, password):
-        
-        return jsonify({"message": "Login successful", "userid": user.userid}), 200
-    else:
-        return jsonify({"error": "Invalid username or password"}), 401
 
 
 

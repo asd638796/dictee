@@ -21,15 +21,26 @@ const Register = (): React.JSX.Element => {
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      alert('User registered successfully');
-      navigate('/login');
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const { uid } = userCredential.user;
+      const response = await fetch('http://localhost:5000/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ firebase_uid: uid, email }),
+      });
+
+      if (response.ok) {
+        alert("User registered successfully");
+        navigate('/login');
+      } else {
+        const data = await response.json();
+        setError(data.error);
+      }
     } catch (error) {
-        console.error('Error registering user', error);
-        alert('Error registering user');
+      setError("Failed to register user");
     }
-
-
   };
 
   return (
