@@ -25,7 +25,7 @@ const Body = ({ currentNote, updateNoteTitle, updateNoteBody }: BodyProps): Reac
 
   async function fetchDefinition(word: string) {
     try {
-      const response = await fetch(`http://localhost:5000/api/definition?word=${word}`);
+      const response = await fetch(`/api/definition?word=${word}`);
       const data = await response.json();
       if (response.ok) {
         setDefinition(data[0]?.meanings[0]?.definitions[0]?.definition || 'No definition found');
@@ -75,16 +75,31 @@ const Body = ({ currentNote, updateNoteTitle, updateNoteBody }: BodyProps): Reac
     return word.trim().length > 0 ? word : '';
   }
 
-  function handleLogout() {
-    
-    logout();
-    navigate('/login');
+  async function handleLogout() {
+    try {
+      const response = await fetch('/api/logout', {
+        method: 'POST',
+        credentials: 'include'  // Important to include credentials in the request
+      });
+  
+      if (response.ok) {
+        logout();
+        navigate('/login');
+      } else {
+        const errorData = await response.json();
+        console.error('Error logging out:', errorData);
+        alert('Error logging out: ' + errorData.error);
+      }
+    } catch (error) {
+      console.error('Error logging out:', error);
+      alert('Error logging out');
+    }
   }
 
 
 
   async function playTTS(text: string) {
-    const response = await fetch('http://localhost:5000/api/tts', {
+    const response = await fetch('/api/tts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

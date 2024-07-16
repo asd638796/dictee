@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import CORS
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, session
+from flask_session import Session
 import tempfile
 import subprocess
 import requests
@@ -11,12 +11,21 @@ import os
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+
 
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+app.config['SESSION_TYPE'] = 'sqlalchemy'
+app.config['SESSION_SQLALCHEMY'] = db
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
+app.config['SESSION_KEY_PREFIX'] = 'session:'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+
+Session(app)
 
 # User model
 class User(db.Model):
@@ -32,11 +41,20 @@ class Note(db.Model):
     userid = db.Column(db.Integer, db.ForeignKey('users.userid'), nullable=False)
     notebody = db.Column(db.Text, nullable=False)
 
+class SessionModel(db.Model):
+    __tablename__ = 'sessions'
+    id = db.Column(db.Integer, primary_key=True)
+    session_id = db.Column(db.String(255), unique=True, nullable=False)
+    data = db.Column(db.Text, nullable=False)
+    expiry = db.Column(db.DateTime, nullable=False)
+
+    __table_args__ = {'extend_existing': True}
+
 # Initialize database
 with app.app_context():
     db.create_all()
 
-@app.route('/register', methods=['POST'])
+@app.route('/api/register', methods=['POST'])
 def register():
     data = request.get_json()
     firebase_uid = data.get('firebase_uid')
@@ -57,7 +75,47 @@ def register():
         return jsonify({"message": "User registered successfully"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    
 
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    uid = data.get('uid')
+   
+
+    if not uid:
+        return jsonify({"error": "Email and password are required"}), 400
+
+    user = User.query.filter_by(firebase_uid=uid).first()
+    if user is None:
+        return jsonify({"error": "User not found"}), 404
+
+ 
+    # Create session
+    session['user_id'] = user.userid
+    session['firebase_uid'] = user.firebase_uid
+
+    return jsonify({"message": "Logged in successfully"}), 200
+
+
+@app.route('/api/logout', methods=['POST'])
+def logout():
+    try:
+        session_id = request.cookies.get(app.session_cookie_name)
+        if session_id:
+            # Directly remove the session from the database
+            session_model = db.session.query(SessionModel).filter_by(session_id=session_id).first()
+            if session_model:
+                db.session.delete(session_model)
+                db.session.commit()
+
+        session.pop('user_id', None)
+        session.pop('firebase_uid', None)
+        return jsonify({"message": "Logged out successfully"}), 200
+    except Exception as e:
+        print(f"Error during logout: {e}")
+        return jsonify({"error": str(e)}), 500
+    
 
 
 @app.route('/api/tts', methods=['POST'])

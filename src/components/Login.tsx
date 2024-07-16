@@ -13,23 +13,43 @@ const Login = (): React.JSX.Element => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    
     e.preventDefault();
     const auth = getAuth();
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            login({uid: user.uid}); 
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Send request to your backend to create session
+        const response = await fetch('api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ uid: user.uid }),
+            credentials: 'include'  // Important for sending cookies
+        });
+
+        if (response.ok) {
+            login({uid: user.uid});
             alert('User logged in successfully');
-            navigate('/app')
-        } catch (error) {
-            console.error('Error logging in', error);
-            alert('Error logging in');
+            navigate('/app');
+        } else {
+            const errorData = await response.json();
+            console.error('Error logging in', errorData);
+            alert('Error logging in: ' + errorData.error);
         }
 
-    
-  };
+
+    } catch (error) {
+        console.error('Error logging in', error);
+        alert('Error logging in');
+    }
+};
+
+
+
 
   return (
     <div className="auth-root">
