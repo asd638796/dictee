@@ -16,9 +16,3 @@ CREATE TABLE IF NOT EXISTS notes (
     FOREIGN KEY (userid) REFERENCES users(userid)
 );
 
-CREATE TABLE IF NOT EXISTS sessions (
-    id SERIAL PRIMARY KEY,
-    session_id VARCHAR(255) UNIQUE NOT NULL,
-    data TEXT NOT NULL,
-    expiry TIMESTAMP NOT NULL
-);

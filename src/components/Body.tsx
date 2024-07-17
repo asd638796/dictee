@@ -37,6 +37,7 @@ const Body = ({ currentNote, updateNoteTitle, updateNoteBody }: BodyProps): Reac
     }
   }
 
+ 
 
   function handleTitleChange(event: React.ChangeEvent<HTMLInputElement>) {
     updateNoteTitle(event.target.value);

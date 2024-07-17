@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-
-
-
 import './Auth.css';
 
 const Login = (): React.JSX.Element => {
@@ -18,35 +15,33 @@ const Login = (): React.JSX.Element => {
     e.preventDefault();
     const auth = getAuth();
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-        // Send request to your backend to create session
-        const response = await fetch('api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ uid: user.uid }),
-            credentials: 'include'  // Important for sending cookies
-        });
+      // Send request to your backend to create session
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ uid: user.uid }),
+        credentials: 'include'  // Important for sending cookies
+      });
 
-        if (response.ok) {
-            login({uid: user.uid});
-            alert('User logged in successfully');
-            navigate('/app');
-        } else {
-            const errorData = await response.json();
-            console.error('Error logging in', errorData);
-            alert('Error logging in: ' + errorData.error);
-        }
-
-
+      if (response.ok) {
+        login(); // Simply set the authenticated state
+        alert('User logged in successfully');
+        navigate('/app');
+      } else {
+        const errorData = await response.json();
+        console.error('Error logging in', errorData);
+        alert('Error logging in: ' + errorData.error);
+      }
     } catch (error) {
-        console.error('Error logging in', error);
-        alert('Error logging in');
+      console.error('Error logging in', error);
+      alert('Error logging in');
     }
-};
+  };
 
 
 

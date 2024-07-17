@@ -7,9 +7,9 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ component: Component }: ProtectedRouteProps): React.JSX.Element => {
-  const { user } = useAuth();
+  const { authenticated } = useAuth();
 
-  if (!user) {
+  if (!authenticated) {
     return <Navigate to="/login" replace />;
   }
 

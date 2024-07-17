@@ -1,13 +1,8 @@
-// AuthProvider.tsx
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-interface User {
-  uid: string;
-}
-
 interface AuthContextType {
-  user: User | null;
-  login: (userData: User) => void;
+  authenticated: boolean;
+  login: () => void;
   logout: () => void;
 }
 
@@ -18,24 +13,18 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps): React.JSX.Element => {
-  const [user, setUser] = useState<User | null>(() => {
-    // Load user from localStorage if available
-    const savedUser = localStorage.getItem('user');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
 
-  const login = (userData: User) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));  // Save user to localStorage
+  const login = () => {
+    setAuthenticated(true);
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.clear();  // Remove user from localStorage
+    setAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ authenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
