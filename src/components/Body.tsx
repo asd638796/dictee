@@ -1,6 +1,4 @@
 import React, { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 
 interface Note {
   id: string;
@@ -12,16 +10,16 @@ interface BodyProps {
   currentNote: Note | undefined;
   updateNoteTitle: (text: string) => void;
   updateNoteBody: (text: string) => void;
+  handleLogout: () => void;
 }
 
 
 
-const Body = ({ currentNote, updateNoteTitle, updateNoteBody }: BodyProps): React.JSX.Element => {
+const Body = ({ currentNote, updateNoteTitle, updateNoteBody, handleLogout }: BodyProps): React.JSX.Element => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [popup, setPopup] = useState<{ visible: boolean, word: string, x: number, y: number }>({ visible: false, word: '', x: 0, y: 0 });
   const [definition, setDefinition] = useState<string>('');
-  const navigate = useNavigate();
-  const { logout } = useAuth();
+  
 
   async function fetchDefinition(word: string) {
     try {
@@ -75,28 +73,6 @@ const Body = ({ currentNote, updateNoteTitle, updateNoteBody }: BodyProps): Reac
     const word = (left || '') + (right || '');
     return word.trim().length > 0 ? word : '';
   }
-
-  async function handleLogout() {
-    try {
-      const response = await fetch('/api/logout', {
-        method: 'POST',
-        credentials: 'include'  // Important to include credentials in the request
-      });
-  
-      if (response.ok) {
-        logout();
-        navigate('/login');
-      } else {
-        const errorData = await response.json();
-        console.error('Error logging out:', errorData);
-        alert('Error logging out: ' + errorData.error);
-      }
-    } catch (error) {
-      console.error('Error logging out:', error);
-      alert('Error logging out');
-    }
-  }
-
 
 
   async function playTTS(text: string) {

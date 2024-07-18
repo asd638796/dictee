@@ -1,12 +1,13 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask import Flask, request, jsonify, send_file
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies, get_csrf_token
 import tempfile
 import subprocess
 import requests
 from dotenv import load_dotenv
 import os
+from nanoid import generate
 
 load_dotenv()
 
@@ -32,9 +33,10 @@ class User(db.Model):
 # Note model
 class Note(db.Model):
     __tablename__ = 'notes'
-    noteid = db.Column(db.Integer, primary_key=True)
+    noteid = db.Column(db.String(255), primary_key=True)
     userid = db.Column(db.Integer, db.ForeignKey('users.userid'), nullable=False)
     notebody = db.Column(db.Text, nullable=False)
+    title = db.Column(db.String(255), nullable=False, default='New Note Title')
 
 CORS(app, supports_credentials=True)
 
@@ -60,7 +62,18 @@ def register():
     try:
         db.session.add(new_user)
         db.session.commit()
-        return jsonify({"message": "User registered successfully"}), 201
+
+        default_note = Note(
+            noteid=generate(size=21),
+            userid=new_user.userid,
+            title="New Note Title",
+            notebody=""
+
+        )
+        db.session.add(default_note)
+        db.session.commit()
+
+        return jsonify({}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 400
     
@@ -79,18 +92,55 @@ def login():
         return jsonify({"error": "User not found"}), 404
     
     access_token = create_access_token(identity={'uid': user.firebase_uid})
+    csrf_token = get_csrf_token(encoded_token=access_token)
 
     # Set JWT token in a cookie
-    response = jsonify({"message": "Logged in successfully"})
+    response = jsonify({})
     response.set_cookie('access_token_cookie', access_token, httponly=True, secure=True)
+    response.set_cookie('csrf_access_token', csrf_token, httponly=False, secure=True)
     return response, 200
 
 
+@app.route('/api/notes', methods=['GET'])
+@jwt_required()
+def get_notes():
+    user_identity = get_jwt_identity()
+    user = User.query.filter_by(firebase_uid=user_identity['uid']).first()
+
+    if user is None:
+        return jsonify({"error": "User not found"}), 404
+
+    notes = Note.query.filter_by(userid=user.userid).all()
+    notes_list = [{"id": note.noteid, "title": note.title, "body": note.notebody} for note in notes]
+    return jsonify(notes_list), 200
+
 
 @app.route('/api/logout', methods=['POST'])
+@jwt_required()
 def logout():
-    
-    response = jsonify({'message': 'Logged out successfully'})
+    user_identity = get_jwt_identity()
+    user = User.query.filter_by(firebase_uid=user_identity['uid']).first()
+
+    if user is None:
+        return jsonify({"error": "User not found"}), 404
+
+    # Delete all existing notes for the user
+    Note.query.filter_by(userid=user.userid).delete()
+
+    # Get notes data from the request
+    notes_data = request.json.get('notes', [])
+    for note in notes_data:
+        new_note = Note(
+            noteid=note.get('id'),
+            userid=user.userid,
+            title=note.get('title', 'New Note Title'),
+            notebody=note.get('body', '')
+        )
+        db.session.add(new_note)
+
+    db.session.commit()
+
+    response = jsonify({})
     unset_jwt_cookies(response)
     return response, 200
 

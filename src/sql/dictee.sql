@@ -10,9 +10,10 @@ CREATE TABLE users (
 
 -- Create the notes table
 CREATE TABLE IF NOT EXISTS notes (
-    noteid SERIAL PRIMARY KEY,
+    noteid VARCHAR(255) NOT NULL PRIMARY KEY,
     userid INTEGER NOT NULL,
     notebody TEXT NOT NULL,
+    title VARCHAR(255) NOT NULL DEFAULT 'New Note Title',
     FOREIGN KEY (userid) REFERENCES users(userid)
 );
 

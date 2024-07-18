@@ -30,7 +30,6 @@ const Login = (): React.JSX.Element => {
 
       if (response.ok) {
         login(); // Simply set the authenticated state
-        alert('User logged in successfully');
         navigate('/app');
       } else {
         const errorData = await response.json();
